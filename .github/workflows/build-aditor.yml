@@ -17,6 +17,8 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Apply reviewed component manifest
         run: |
           python3 aditor/prepare.py . --manifest aditor/ffmpeg-components.json
