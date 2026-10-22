@@ -9,6 +9,15 @@ param(
 $ErrorActionPreference = 'Stop'
 $manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
 if ($manifest.schemaVersion -ne 1) { throw 'Unsupported FFmpeg component manifest schema' }
+foreach ($category in @('encoders', 'decoders', 'muxers', 'demuxers', 'filters', 'indevs', 'protocols', 'parsers', 'hwaccels', 'hwdevices')) {
+    $names = @($manifest.components.$category | ForEach-Object { $_.names })
+    if ($names.Count -eq 0) { throw "Empty or missing component category: $category" }
+    $seen = @{}
+    foreach ($name in $names) {
+        if ($name -notmatch '^[a-z0-9_]+$' -or $seen.ContainsKey($name)) { throw "Invalid or duplicate ${category}: $name" }
+        $seen[$name] = $true
+    }
+}
 
 function Invoke-Ffmpeg([string[]]$Arguments) {
     # FFmpeg writes help/buildconf to stderr, even on success; Windows PowerShell

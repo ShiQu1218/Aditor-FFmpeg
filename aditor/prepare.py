@@ -48,11 +48,15 @@ package_variant() {
         "20-zlib.sh", "50-amf.sh", "50-dav1d.sh", "50-ffnvcodec.sh",
         "50-onevpl.sh", "50-openh264.sh", "zz-final.sh",
     }
-    scripts = root / "scripts.d"
+    scripts = (root / "scripts.d").resolve()
+    if not scripts.is_relative_to(root):
+        raise ValueError("Dependency recipe directory escapes the upstream checkout")
     if not all((scripts / name).is_file() for name in keep):
         raise ValueError("Pinned upstream dependency recipes are missing")
     for path in scripts.iterdir():
         if path.name not in keep:
+            if not path.resolve().is_relative_to(scripts):
+                raise ValueError(f"Dependency recipe path escapes the build workspace: {path}")
             if path.is_dir():
                 shutil.rmtree(path)
             else:
@@ -89,11 +93,14 @@ ffbuild_configure() { echo --enable-ffnvcodec; }
     text = text.replace(clone, checkout).replace("make install install-doc", "make install")
     build.write_text(text, encoding="utf-8", newline="\n")
     download = root / "download.sh"
-    download.write_text(download.read_text(encoding="utf-8").replace(
-        'set -xe\n', 'set -xe\nshopt -s nullglob\n'), encoding="utf-8", newline="\n")
+    download_text = download.read_text(encoding="utf-8")
+    if 'shopt -s nullglob\n' not in download_text:
+        download_text = download_text.replace('set -xe\n', 'set -xe\nshopt -s nullglob\n')
+    download.write_text(download_text, encoding="utf-8", newline="\n")
     aditor = root / "aditor"
     aditor.mkdir(exist_ok=True)
-    shutil.copyfile(manifest_path, aditor / "ffmpeg-components.json") if manifest_path.resolve() != (aditor / "ffmpeg-components.json").resolve() else None
+    if manifest_path.resolve() != (aditor / "ffmpeg-components.json").resolve():
+        shutil.copyfile(manifest_path, aditor / "ffmpeg-components.json")
     (aditor / "configure.txt").write_text("\n".join(flags) + "\n", encoding="utf-8", newline="\n")
     print(f"Prepared {root}: win64 lgpl-shared-aditor 8.1")
 

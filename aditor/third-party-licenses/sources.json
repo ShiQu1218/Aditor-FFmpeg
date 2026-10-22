@@ -1,0 +1,38 @@
+[
+  {
+    "name": "amf",
+    "repository": "https://github.com/GPUOpen-LibrariesAndSDKs/AMF",
+    "commit": "6277e353fd625121a8f627b1d0540323ef372a49",
+    "license": "https://raw.githubusercontent.com/GPUOpen-LibrariesAndSDKs/AMF/6277e353fd625121a8f627b1d0540323ef372a49/LICENSE.txt"
+  },
+  {
+    "name": "dav1d",
+    "repository": "https://github.com/videolan/dav1d",
+    "commit": "9711965b60bb692ae24004659acf61f5c7d9ed61",
+    "license": "https://raw.githubusercontent.com/videolan/dav1d/9711965b60bb692ae24004659acf61f5c7d9ed61/COPYING"
+  },
+  {
+    "name": "onevpl",
+    "repository": "https://github.com/intel/libvpl",
+    "commit": "674d015bcb294bc39fa276e99a652ea045423e82",
+    "license": "https://raw.githubusercontent.com/intel/libvpl/674d015bcb294bc39fa276e99a652ea045423e82/LICENSE"
+  },
+  {
+    "name": "openh264",
+    "repository": "https://github.com/cisco/openh264",
+    "commit": "8b2d28faade10d74d99ac80e199aef664c9c5a3b",
+    "license": "https://raw.githubusercontent.com/cisco/openh264/8b2d28faade10d74d99ac80e199aef664c9c5a3b/LICENSE"
+  },
+  {
+    "name": "zlib",
+    "repository": "https://github.com/madler/zlib",
+    "commit": "767c4c947852e143f582c85f14cf573411df1b35",
+    "license": "https://raw.githubusercontent.com/madler/zlib/767c4c947852e143f582c85f14cf573411df1b35/zlib.h"
+  },
+  {
+    "name": "nv-codec-headers",
+    "repository": "https://github.com/FFmpeg/nv-codec-headers",
+    "commit": "ced4f8eba3ba5dd431932cba17928f0dffdaeb2b",
+    "license": "https://raw.githubusercontent.com/FFmpeg/nv-codec-headers/ced4f8eba3ba5dd431932cba17928f0dffdaeb2b/include/ffnvcodec/nvEncodeAPI.h"
+  }
+]

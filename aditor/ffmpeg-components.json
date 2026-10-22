@@ -37,16 +37,18 @@
       {"names": ["d3d11va", "dxva2", "qsv"], "purpose": "Compiled device APIs; runtime availability is tested separately", "sources": ["recorder/src/encode/hardware.rs", "engine/aditor/decode.py"]}
     ],
     "muxers": [
-      {"names": ["mp4", "mov", "rawvideo", "null", "image2"], "purpose": "Recording/finalization, export/intermediates, frame pipes and thumbnails", "sources": ["recorder/src/mux.rs", "app/src/main/recording/finalize.ts", "app/src/main/recording/obs-finalize.ts", "app/src/main/export/plan.ts", "engine/aditor/decode.py", "app/src/main/thumbnail.ts"]},
+      {"names": ["mp4", "mov", "rawvideo", "null", "image2"], "purpose": "Recording/finalization, export/intermediates, frame pipes and thumbnails", "sources": ["recorder/src/encode/mux.rs", "app/src/main/recording/finalize.ts", "app/src/main/recording/obs-finalize.ts", "app/src/main/export/plan.ts", "engine/aditor/decode.py", "app/src/main/thumbnail.ts"]},
       {"names": ["matroska"], "purpose": "MKV timing and FFV1 test fixtures", "sources": ["engine/tests/test_probe.py", "engine/tests/test_matches.py"]}
     ],
     "demuxers": [
       {"names": ["mov", "matroska", "avi", "concat"], "purpose": "Import containers (mov also covers mp4/m4v), WebM and concatenated exports", "sources": ["app/src/main/library.ts", "app/src/main/export/plan.ts", "app/src/main/recording/finalize.ts"]},
-      {"names": ["image2", "image2pipe", "png_pipe", "rawvideo"], "purpose": "PNG overlays and raw frame fixture input", "sources": ["engine/tests/conftest.py", "engine/tests/test_aspect.py"]}
+      {"names": ["image2", "image2pipe", "rawvideo"], "purpose": "PNG overlays and raw frame fixture input", "sources": ["engine/tests/conftest.py", "engine/tests/test_aspect.py"]},
+      {"names": ["png_pipe"], "configureNames": ["image_png_pipe"], "purpose": "PNG probing: the CLI name differs from the configure component name", "sources": ["engine/tests/conftest.py"]}
     ],
     "filters": [
       {"names": ["scale", "crop", "pad", "fps", "format", "split", "vstack", "hwdownload"], "purpose": "Decode sampling, scene/game/aspect detection, normalize export, proxy and thumbnails", "sources": ["engine/aditor/decode.py", "engine/aditor/matches.py", "engine/aditor/aspect.py", "engine/aditor/game_detect.py", "app/src/main/export/plan.ts", "app/src/main/proxy.ts", "app/src/main/thumbnail.ts"]},
-      {"names": ["aresample", "anullsrc", "color", "trim", "atrim", "select", "volume", "null", "anull", "aformat", "buffer", "buffersink", "abuffer", "abuffersink"], "purpose": "Audio normalization, silent tracks, encoder detection and implicit filter graph adapters", "sources": ["app/src/main/export/plan.ts", "app/src/main/export/encoders.ts", "engine/aditor/decode.py", "recorder/src/encode/tests.rs"]},
+      {"names": ["aresample", "anullsrc", "color", "trim", "atrim", "select", "volume", "null", "anull", "aformat"], "purpose": "Audio normalization, silent tracks and encoder detection", "sources": ["app/src/main/export/plan.ts", "app/src/main/export/encoders.ts", "recorder/src/encode/tests.rs"]},
+      {"names": ["buffer", "buffersink", "abuffer", "abuffersink"], "configureNames": [], "purpose": "FFmpeg always inserts these API filters; they have no configure switch", "sources": ["engine/aditor/decode.py", "app/src/main/export/plan.ts"]},
       {"names": ["testsrc2", "sine", "drawbox", "overlay", "setpts"], "purpose": "Synthetic media, HUD overlays and VFR timestamps", "sources": ["engine/tests/conftest.py", "engine/tests/test_probe.py", "engine/tests/test_matches.py", "app/e2e/helpers/makeFixtures.ts", "app/src/main/recording/test-support.ts"]}
     ],
     "indevs": [
