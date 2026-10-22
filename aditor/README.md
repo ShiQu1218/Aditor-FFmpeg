@@ -2,7 +2,8 @@
 
 建置 fork：[ShiQu1218/Aditor-FFmpeg](https://github.com/ShiQu1218/Aditor-FFmpeg/tree/aditor)。
 本目錄維護 fork 的 `aditor/` overlay 與 `.github/workflows/build-aditor.yml`；
-元件的唯一來源是 [`scripts/ffmpeg-components.json`](../scripts/ffmpeg-components.json)。
+元件的唯一來源是主專案的 `scripts/ffmpeg-components.json`；
+發佈到 fork 的 `aditor/ffmpeg-components.json` 作為該次建置快照。
 
 ## 固定來源
 
@@ -56,6 +57,8 @@ ZIP 保留單一頂層目錄，包含 `bin/*.exe`、shared DLL、`lib/*.lib`、G
    軟體冒煙流程，以及真正用 MSVC 連結三個 import library 並執行。
 5. 從 release 的 `SHA256SUMS` 更新 fetch 的 tag、asset、SHA256、URL；
    完整重建 recorder／engine／app，執行下列驗收後更新 THIRD_PARTY_NOTICES。
+
+以下驗收指令在 **Aditor 主專案根目錄**執行；FFmpeg fork 本身不包含 engine／app／recorder。
 
 ```powershell
 ./scripts/verify-ffmpeg-components.ps1 -Strict -CheckPackage

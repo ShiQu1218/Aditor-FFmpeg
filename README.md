@@ -1,3 +1,11 @@
+# Aditor FFmpeg
+
+This fork publishes the minimal LGPL v3 shared build for Aditor. Build and upgrade instructions, pinned sources, validation, and rollback are in [aditor/README.md](aditor/README.md).
+
+The original BtbN documentation follows for toolchain reference.
+
+---
+
 # FFmpeg Static Auto-Builds
 
 Static Windows (x86_64) and Linux (x86_64) Builds of ffmpeg master and latest release branch.

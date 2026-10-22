@@ -77,10 +77,14 @@ def main(args):
         print(f"{name}: {record['status']}", flush=True)
 
     if args.baseline_ffmpeg:
-        source = args.output / "benchmark.mp4"
+        source = args.benchmark_video.resolve() if args.benchmark_video else args.output / "benchmark.mp4"
+        if args.benchmark_video and not source.is_file():
+            raise FileNotFoundError(f"Benchmark video must be an existing file: {source}")
         if not source.exists():
             run(args.fixture_ffmpeg, ["-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=60:duration=8", "-f", "lavfi", "-i", "sine=sample_rate=48000:duration=8", "-c:v", "libx264", "-preset", "ultrafast", "-g", "60", "-c:a", "aac", "-shortest", str(source)])
         binaries = {"baseline": args.baseline_ffmpeg, "minimal": args.ffmpeg}
+        expected_frames = None
+        evidence["benchmarkVideo"] = str(source)
         for operation in ("engine-software", "engine-analyze", "export-openh264"):
             samples = {name: [] for name in binaries}
             # Warm both binaries before alternating the measured order.
@@ -92,8 +96,12 @@ def main(args):
                     if operation == "engine-software":
                         os.environ["ADITOR_FFMPEG"] = str(binary.resolve())
                         count = sum(1 for _ in FrameStream(str(source), profile, hwaccel=False, codec="h264"))
-                        if count != 32:
-                            raise AssertionError(f"Benchmark expected 32 engine samples, got {count}")
+                        if not count:
+                            raise AssertionError("Benchmark produced no engine samples")
+                        if expected_frames is None:
+                            expected_frames = count
+                        if count != expected_frames:
+                            raise AssertionError(f"Benchmark expected {expected_frames} engine samples, got {count}")
                     elif operation == "engine-analyze":
                         environment = dict(os.environ, ADITOR_FFMPEG=str(binary.resolve()))
                         environment.pop("ADITOR_FFPROBE", None)
@@ -123,6 +131,7 @@ if __name__ == "__main__":
     parser.add_argument("--ffmpeg", type=Path, required=True)
     parser.add_argument("--fixture-ffmpeg", type=Path, required=True)
     parser.add_argument("--baseline-ffmpeg", type=Path)
+    parser.add_argument("--benchmark-video", type=Path, help="Optional existing video for the performance comparison (read-only)")
     parser.add_argument("--output", type=Path, default=ROOT / "build/ffmpeg-acceptance")
     parser.add_argument("--repeats", type=int, default=5)
     raise SystemExit(main(parser.parse_args()))
