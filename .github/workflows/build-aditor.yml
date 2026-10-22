@@ -26,9 +26,9 @@ jobs:
       - name: Build using BtbN toolchain and dependency recipes
         env:
           QUICKBUILD: '1'
-          GITHUB_REPOSITORY: btbn/ffmpeg-builds
         run: |
           set -euo pipefail
+          export GITHUB_REPOSITORY=btbn/ffmpeg-builds
           ./makeimage.sh win64 lgpl-shared-aditor 8.1
           ./build.sh win64 lgpl-shared-aditor 8.1
           cd artifacts

@@ -88,6 +88,9 @@ ffbuild_configure() { echo --enable-ffnvcodec; }
         raise ValueError("Upstream build.sh changed; review the pinned source checkout")
     text = text.replace(clone, checkout).replace("make install install-doc", "make install")
     build.write_text(text, encoding="utf-8", newline="\n")
+    download = root / "download.sh"
+    download.write_text(download.read_text(encoding="utf-8").replace(
+        'set -xe\n', 'set -xe\nshopt -s nullglob\n'), encoding="utf-8", newline="\n")
     aditor = root / "aditor"
     aditor.mkdir(exist_ok=True)
     shutil.copyfile(manifest_path, aditor / "ffmpeg-components.json") if manifest_path.resolve() != (aditor / "ffmpeg-components.json").resolve() else None
