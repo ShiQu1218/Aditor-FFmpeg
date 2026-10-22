@@ -25,6 +25,9 @@ try {
         Invoke-FF @('-f', 'concat', '-safe', '0', '-i', 'list.txt', '-c:v', 'copy', '-af', 'aresample=async=1:first_pts=0', '-c:a', 'aac', '-movflags', '+faststart', 'concat.mp4')
         Invoke-FF @('-i', 'concat.mp4', '-c', 'copy', '-metadata', 'aditor_game=apex', '-movflags', '+faststart+use_metadata_tags', 'final.mp4')
         Invoke-FF @('-i', 'final.mp4', '-f', 'null', '-')
+        Invoke-FF @('-i', 'final.mp4', '-map', '0:a:0', '-c:a', 'pcm_s16le', '-f', 's16le', 'audio-s16.raw')
+        Invoke-FF @('-i', 'final.mp4', '-map', '0:a:0', '-c:a', 'pcm_f32le', '-f', 'f32le', 'audio-f32.raw')
+        if ((Get-Item audio-s16.raw).Length -eq 0 -or (Get-Item audio-f32.raw).Length -eq 0) { throw 'Empty decoded audio samples' }
         $json = & $probe -v error -show_entries 'stream=codec_name:format_tags=aditor_game' -of json final.mp4 | Out-String
         if ($LASTEXITCODE -ne 0) { throw 'ffprobe failed' }
         $info = $json | ConvertFrom-Json

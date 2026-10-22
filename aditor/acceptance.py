@@ -79,9 +79,9 @@ def main(args):
     if args.baseline_ffmpeg:
         source = args.output / "benchmark.mp4"
         if not source.exists():
-            run(args.fixture_ffmpeg, ["-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=60:duration=8", "-c:v", "libx264", "-preset", "ultrafast", "-g", "60", str(source)])
+            run(args.fixture_ffmpeg, ["-f", "lavfi", "-i", "testsrc2=size=1920x1080:rate=60:duration=8", "-f", "lavfi", "-i", "sine=sample_rate=48000:duration=8", "-c:v", "libx264", "-preset", "ultrafast", "-g", "60", "-c:a", "aac", "-shortest", str(source)])
         binaries = {"baseline": args.baseline_ffmpeg, "minimal": args.ffmpeg}
-        for operation in ("engine-software", "export-openh264"):
+        for operation in ("engine-software", "engine-analyze", "export-openh264"):
             samples = {name: [] for name in binaries}
             # Warm both binaries before alternating the measured order.
             for repeat in range(args.repeats + 1):
@@ -94,8 +94,19 @@ def main(args):
                         count = sum(1 for _ in FrameStream(str(source), profile, hwaccel=False, codec="h264"))
                         if count != 32:
                             raise AssertionError(f"Benchmark expected 32 engine samples, got {count}")
+                    elif operation == "engine-analyze":
+                        environment = dict(os.environ, ADITOR_FFMPEG=str(binary.resolve()))
+                        environment.pop("ADITOR_FFPROBE", None)
+                        result = subprocess.run([
+                            sys.executable, "-m", "aditor", "analyze", str(source.resolve()),
+                            "--profile-dir", str(ROOT / "templates/icons"),
+                            "--cache-dir", str(args.output / f"benchmark-{name}-cache"),
+                            "--force", "--no-hwaccel", "--jobs", "1", "--game", "apex", "--aspect", "16:9",
+                        ], env=environment, cwd=ROOT / "engine", capture_output=True)
+                        if result.returncode:
+                            raise RuntimeError(result.stderr.decode(errors="replace")[-4000:])
                     else:
-                        run(binary, ["-i", str(source), "-vf", "scale=1280:720", "-c:v", "libopenh264", "-b:v", "8M", "-allow_skip_frames", "0", "-an", "-f", "null", "-"])
+                        run(binary, ["-i", str(source), "-vf", "scale=1280:720", "-c:v", "libopenh264", "-b:v", "8M", "-allow_skip_frames", "0", "-af", "aresample=async=1:first_pts=0", "-c:a", "aac", "-ar", "48000", "-ac", "2", "-movflags", "+faststart", str(args.output / f"benchmark-{name}-export.mp4")])
                     elapsed = time.perf_counter() - start
                     if repeat:
                         samples[name].append(elapsed)

@@ -29,12 +29,12 @@
 --enable-libopenh264
 --enable-zlib
 --enable-bsfs
---enable-encoder=h264_nvenc,hevc_nvenc,av1_nvenc,h264_amf,hevc_amf,av1_amf,h264_qsv,hevc_qsv,av1_qsv,libopenh264,aac,pcm_s16le,mjpeg,rawvideo,wrapped_avframe,ffv1,mpeg4
+--enable-encoder=h264_nvenc,hevc_nvenc,av1_nvenc,h264_amf,hevc_amf,av1_amf,h264_qsv,hevc_qsv,av1_qsv,libopenh264,aac,pcm_s16le,mjpeg,rawvideo,wrapped_avframe,ffv1,mpeg4,pcm_f32le
 --enable-decoder=h264,hevc,av1,libdav1d,vp8,vp9,mpeg4,mjpeg,aac,aac_fixed,aac_latm,opus,vorbis,mp3,mp3float,mp3adu,mp3adufloat,mp3on4,mp3on4float,flac,ac3,ac3_fixed,eac3,pcm_alaw,pcm_bluray,pcm_dvd,pcm_f16le,pcm_f24le,pcm_f32be,pcm_f32le,pcm_f64be,pcm_f64le,pcm_lxf,pcm_mulaw,pcm_s16be,pcm_s16be_planar,pcm_s16le,pcm_s16le_planar,pcm_s24be,pcm_s24daud,pcm_s24le,pcm_s24le_planar,pcm_s32be,pcm_s32le,pcm_s32le_planar,pcm_s64be,pcm_s64le,pcm_s8,pcm_s8_planar,pcm_sga,pcm_u16be,pcm_u16le,pcm_u24be,pcm_u24le,pcm_u32be,pcm_u32le,pcm_u8,pcm_vidc,rawvideo,wrapped_avframe,png,ffv1
 --enable-hwaccel=h264_d3d11va,h264_d3d11va2,h264_dxva2,hevc_d3d11va,hevc_d3d11va2,hevc_dxva2,av1_d3d11va,av1_d3d11va2,av1_dxva2,vp9_d3d11va,vp9_d3d11va2,vp9_dxva2
---enable-muxer=mp4,mov,rawvideo,null,image2,matroska
---enable-demuxer=mov,matroska,avi,concat,image2,image2pipe,png_pipe,rawvideo
---enable-filter=scale,crop,pad,fps,format,split,vstack,hwdownload,aresample,anullsrc,color,trim,atrim,select,volume,null,anull,aformat,buffer,buffersink,abuffer,abuffersink,testsrc2,sine,drawbox,overlay,setpts
+--enable-muxer=mp4,mov,rawvideo,null,image2,matroska,pcm_s16le,pcm_f32le
+--enable-demuxer=mov,matroska,avi,concat,image2,image2pipe,rawvideo,image_png_pipe
+--enable-filter=scale,crop,pad,fps,format,split,vstack,hwdownload,aresample,anullsrc,color,trim,atrim,select,volume,null,anull,aformat,testsrc2,sine,drawbox,overlay,setpts
 --enable-indev=lavfi
 --enable-protocol=file,pipe
 --enable-parser=h264,hevc,av1,vp8,vp9,aac,aac_latm,opus,vorbis,mpegaudio,mpeg4video,mjpeg,flac,ac3,png

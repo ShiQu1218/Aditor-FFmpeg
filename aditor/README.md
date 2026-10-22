@@ -11,6 +11,9 @@
 - NVENC headers：`ced4f8eba3ba5dd431932cba17928f0dffdaeb2b`，SDK 13.0，保留 Pascal/Maxwell 的驅動相容性。
 - 其餘第三方來源沿用上述 BtbN commit 的 recipe pin：dav1d、OpenH264、AMF、libvpl，以及 PNG fixture 所需的 zlib。
 
+清單的 `names` 是 CLI 名稱；`configureNames` 處理 `png_pipe`、原始 PCM muxer 等
+名稱差異，空陣列表示 FFmpeg 自動加入的 buffer API filter。驗證仍檢查所有 CLI 元件。
+
 `prepare.py` 繼承 `win64-lgpl-shared` 的授權／封裝環境，裁減依賴 recipe 與下載圖，
 從 JSON 產生 configure，並把 FFmpeg checkout 固定到完整 commit。
 版本 addin 仍為 `8.1`；這些第三方函式庫在 BtbN 中稱為 dependency recipes，不是 addins。
