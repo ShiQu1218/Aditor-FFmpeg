@@ -76,12 +76,14 @@ ZIP 保留單一頂層目錄，包含 `bin/*.exe`、shared DLL、`lib/*.lib`、G
 JSON 結果及素材留在忽略版控的 `build/ffmpeg-acceptance/`；效能比較交錯順序、暖機後
 各執行五次，以中位數檢查 5% 回歸門檻。NVIDIA／AMD／Intel 錄影與真實長錄影仍需實機驗收。
 
-## 已知測試規格衝突
+## LGPL 測試素材
 
-既有 engine／E2E fixture 呼叫 GPL-only 的 `libx264`。將它加入 LGPL 成品不可行。
-測試 fixture 的調整需取得同意，並保留斷言與測試範圍；不能為了讓測試通過啟用 GPL。
-AV1 fallback 測試原本依 `libsvtav1` 是否存在決定跳過，也不能把跳過記成 AV1 解碼通過。
-獨立格式驗收會直接測試 AV1 8/10-bit。
+2026-10-23 使用者同意調整測試。engine／E2E 的 H.264 合成素材改用隨附的
+`libopenh264`，關閉跳幀並保留原來的 GOP、解析度、時序與所有測試斷言。
+rawvideo 標準輸入明確使用 `pipe:0`，符合成品只保留 file／pipe 的設定。
+AV1 解碼／fallback 測試改用版控內的合成 AV1 fixture，避免依賴未隨附的
+`libsvtav1` 而跳過。生成命令、版本與 SHA256 記在該 fixture 的 README。
+獨立格式驗收另直接測試 AV1 8/10-bit。
 
 ## 回滾
 
